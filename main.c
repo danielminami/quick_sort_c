@@ -1,13 +1,45 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 
-void swap(int* a, int* b) {
-    int temp = *a;
-    *a = *b;
-    *b = temp;
+void swap(int *x, int *y) {
+    int temp = *x;
+    *x = *y;
+    *y = temp;
 }
 
+int splitList(int A[], int l, int h) {
+    int pivot = A[l];
+    int i = l, j = h;
+    do {
+        do {
+            i++;
+        } while (A[i] <= pivot && i < h);
+
+        do {
+            j--;
+        } while (A[j] > pivot && i >= l);
+
+        if (i < j)
+            swap(&A[i], &A[j]);
+    } while (i < j);
+
+    swap(&A[l], &A[j]);
+    return j;
+}
+
+void quickSort(int A[], int l, int h) {
+    int j;
+    if (l < h) {
+        j = splitList(A, l, h);
+        quickSort(A, l, j);
+        quickSort(A, j + 1, h);
+    }
+}
+
+
+int generateRandomNumber(int lower, int upper) {
+    return (rand() % (upper - lower + 1)) + lower;
+}
 
 void printArray(int arr[], int size) {
     for (int i=0; i<size; i++) {
@@ -17,11 +49,16 @@ void printArray(int arr[], int size) {
 }
 
 int main() {
+    srand(time(0));
+    int *A, n = 30, i;
+    A = (int *)malloc(n * sizeof(int));
+    for (i = 0; i < n; i++)
+        A[i] = generateRandomNumber(0,100);
     
-    int arr[] = {10, 44, 2, 4, 14, 3, 4, 5, 1, 90};
-    int size = sizeof(arr)/sizeof(int);
-    //quickSort(arr, size);
-    printArray(arr, size);
+    printArray(A, n);
     
-    exit(0);
+    quickSort(A, 0, n);
+    
+    printArray(A, n);
+    return 0;
 }
